@@ -1,6 +1,6 @@
 # MecApp 🧑🏻‍🔧
 ## Desarrolladores
-### ⚙️ Backend (Python, django, etc.)
+### ⚙️ Backend (Python, FastAPI, etc.)
 - [Santiago Nahuel Cabaña](https://github.com/santiagoncabana)
 - [Marcos Medina](https://github.com/MarcosJMedina)
 - [Angel Rojas](https://github.15agustinrojas-jpg)
