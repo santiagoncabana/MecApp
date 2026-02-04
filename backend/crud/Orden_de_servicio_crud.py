@@ -15,7 +15,8 @@ def create_orden(db: Session, orden: OrdenDeServicio):
     if not cliente:
         raise ValueError("Cliente no encontrado")
     
-    vehiculo = db.query(Vehiculo).filter(Vehiculo.patente == orden.patente, Vehiculo.modelo == orden.modelo, Vehiculo.marca == orden.marca, Vehiculo.anio == orden.anio).first()
+    # Buscar vehículo por PATENTE únicamente (es única en el sistema)
+    vehiculo = db.query(Vehiculo).filter(Vehiculo.patente == orden.patente).first()
     
     if not vehiculo:
         #Si NO existe, lo creamos
@@ -30,9 +31,7 @@ def create_orden(db: Session, orden: OrdenDeServicio):
         db.flush()  #Para obtener el ID del vehículo
 
     else:
-        vehiculo.modelo = orden.modelo
-        vehiculo.marca = orden.marca
-        vehiculo.anio = orden.anio
+        raise ValueError("Patente ya existente")
     
     cliente.vehiculo_id = vehiculo.id
     

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from ..database.database import get_db
 from ..crud.Orden_de_servicio_crud import create_orden, actualizar_turno_estado
 from ..schemas.turno_schema import orden_de_servicio_create, OrdenResponse
-from database.models import Cliente, Turno
+
 
 
 router = APIRouter(prefix="/api/orden_de_servicio", tags=["orden_de_servicio"])
