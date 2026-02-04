@@ -44,3 +44,13 @@ app.include_router(Orden_de_servicio_router.router)
 app.include_router(vistaEncargado_router.router)
 
 Base.metadata.create_all(bind=engine)
+
+@app.on_event("startup")
+def startup():
+    try:
+        Base.metadata.create_all(bind=engine, checkfirst=True)
+        print("✅ Tablas creadas/verificadas exitosamente")
+    except Exception as e:
+        print(f"Error creando tablas: {e}")
+
+startup()
