@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
-from ..crud.vistas_crud import obtener_cliente_por_dni, obtener_todos_clientes, obtener_todos_los_vehiculos
+from ..crud.vistas_Encargado_crud import obtener_cliente_por_dni, obtener_todos_clientes, obtener_todos_los_vehiculos
 from ..schemas.cliente_schemas import ClienteOut,ClienteResponse
 from ..schemas.vehiculos_schemas import vehiculos
 from ..database.database import get_db

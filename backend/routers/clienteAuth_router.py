@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..database.database import get_db, Session
-from ..crud.auth_cliente_crud import create_cliente,autenticacion_cliente  ,autenticacion_encargado ,create_empleado, actualizar_perfil_por_dni
+from ..crud.auth_cliente_crud import create_cliente,autenticacion_cliente  ,autenticacion_encargado ,actualizar_perfil_por_dni
+from ..crud.vistas_Encargado_crud import create_empleado
 from ..schemas.auth_schema import ClienteRegister, ClienteLogin, ClienteUpdate
 from ..database.models import Cliente
 from ..schemas.auth_schema import EncargadoLogin, EmpleadoRegister

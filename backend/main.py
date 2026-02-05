@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI
-from .routers import clienteAuth_router 
+from .routers import vistaEncargado_router
 from MecApp.backend.routers import turno_router
 from .database.database import create_db_tables
 from .database.database import engine, Base
