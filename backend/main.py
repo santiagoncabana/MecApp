@@ -9,6 +9,7 @@ from .database.database import create_db_tables
 from .database.database import engine, Base
 from MecApp.backend.routers import vistaEncargado_router
 from MecApp.backend.routers import Orden_de_servicio_router
+from MecApp.backend.routers import clienteAuth_router
 
 
 
@@ -21,6 +22,7 @@ app = FastAPI()
    #"http://127.0.0.1:5500", 
     #"http://localhost:5500",
 #]
+
 origins = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
@@ -29,9 +31,10 @@ origins = [
     "http://127.0.0.1:8001",  # ← AGREGAR
     "http://localhost:8001"   # ← AGREGAR
 ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,             # Lista de URLs permitidas
+    allow_origins=["*"],             # Lista de URLs permitidas
     allow_credentials=True,            # Permite cookies y encabezados de autorización
     allow_methods=["*"],               # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],               # Permite todos los encabezados

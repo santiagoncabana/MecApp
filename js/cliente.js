@@ -4,7 +4,7 @@ const API_BASE = 'http://localhost:8000';
 
 async function fetchAllClientes() {
     try {
-        const res = await fetch(`${API_BASE}/api/clientes/clientes`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/api/clientes/clientes`);
         if (!res.ok) throw new Error('Error al obtener clientes');
         return await res.json();
     } catch (e) {
@@ -15,7 +15,7 @@ async function fetchAllClientes() {
 
 async function fetchClientById(id) {
     try {
-        const res = await fetch(`${API_BASE}/api/clientes/clientes`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/api/clientes/clientes`);
         if (!res.ok) return null;
         const list = await res.json();
         return list.find(c => 

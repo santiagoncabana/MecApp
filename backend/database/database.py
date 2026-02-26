@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from database import models
 import importlib
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Angel4660@localhost:5432/MecApp"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:12345@localhost:5432/MECAPP"
 # SQLALCHEMY_DATABASE_URL= "postgresql+psycopg2://postgres:postgres@localhost:5432/mecapp"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

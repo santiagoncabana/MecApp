@@ -8,7 +8,7 @@ async function fetchVehiculos() {
     try {
         console.log('Fetching vehicles from:', `${API_BASE}/api/clientes/vehiculos`);
         const res = await fetch(`${API_BASE}/api/clientes/vehiculos`, { 
-            credentials: 'include' 
+             
         });
         console.log('Response status:', res.status);
         if (!res.ok) throw new Error('Error al obtener vehículos');
@@ -30,7 +30,7 @@ async function fetchClienteById(clienteId) {
 
     try {
         const res = await fetch(`${API_BASE}/api/clientes/clientes`, { 
-            credentials: 'include' 
+         
         });
         if (!res.ok) return null;
         

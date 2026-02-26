@@ -27,7 +27,7 @@ class ClienteResponse(BaseModel):
     id: int
     nombre: str
     email: str
-    DNI: str
+    DNI: int
     telefono: Optional[str] = None
     vehiculo_id: Optional[int] = None  #Vehículo principal
     vehiculos: List[VehiculoResponse] = []  #Lista de TODOS sus vehículos

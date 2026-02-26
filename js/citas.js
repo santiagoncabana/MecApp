@@ -11,7 +11,7 @@ async function fetchTurnos() {
     try {
         console.log('Fetching turnos...');
         const res = await fetch(`${API_BASE}/api/turnos/obtenerTodoLosTurnos`, {
-            credentials: 'include'
+            
         });
         if (!res.ok) throw new Error('Error al obtener turnos');
         const data = await res.json();
@@ -28,7 +28,7 @@ async function updateTurno(turnoDNI, turnoData) {
         const res = await fetch(`${API_BASE}/api/turnos/${turnoDNI}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            
             body: JSON.stringify(turnoData)
         });
         if (!res.ok) throw new Error('Error al actualizar turno');
@@ -44,7 +44,7 @@ async function deleteTurno(turnoId) {
     try {
         const res = await fetch(`${API_BASE}/api/turnos/${turnoId}`, {
             method: 'DELETE',
-            credentials: 'include'
+           
         });
         if (!res.ok) throw new Error('Error al eliminar turno');
         return await res.json();
@@ -60,7 +60,7 @@ async function createOrdenServicio(ordenData) {
         const res = await fetch(`${API_BASE}/api/orden_de_servicio/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            
             body: JSON.stringify(ordenData)
         });
         if (!res.ok) throw new Error('Error al crear orden de servicio');

@@ -12,7 +12,7 @@ class ClienteBasico(BaseModel):
     id: int
     nombre: str
     telefono: str | None = None
-    DNI: str | None = None
+    DNI: int | None = None
     
     class Config:
         from_attributes = True

@@ -24,7 +24,7 @@ async function cargarEstadisticasDashboard() {
     selectorIngresos.textContent = 'Cargando...'; 
 
     try {
-        const response = await fetch(endpoint, { credentials: 'include' });
+        const response = await fetch(endpoint);
         if (!response.ok) {
              console.error(`Error ${response.status} al cargar estadísticas.`);
              // Si falla, volvemos a mostrar el valor de placeholder
@@ -69,8 +69,7 @@ async function cargarCitasPendientes() {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
-            },
-            credentials: 'include'
+            }
         });
 
         // Manejar errores de HTTP (ej. 404, 500)
