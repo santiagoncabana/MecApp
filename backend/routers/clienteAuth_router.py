@@ -46,8 +46,20 @@ def registerEncargado(empleado: EmpleadoRegister, db: Session = Depends(get_db))
 @router.post("/login", tags=["login cliente"])
 def loginCliente(cliente: ClienteLogin, db: Session = Depends(get_db)):
     user = autenticacion_cliente(db, cliente.email, cliente.contrasena)
+    
     if user:
-        return {"message": "Autenticación exitosa", "email": user.email}
+        return {
+            "message": "Autenticación exitosa",
+            "cliente": {
+                "id": user.id,
+                "nombre": user.nombre,
+                "email": user.email,
+                "telefono": user.telefono,
+                "dni": user.DNI,
+                "vehiculo_id": user.vehiculo_id
+            }
+        }
+    
     raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 
 # Login Encargado

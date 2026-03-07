@@ -6,6 +6,7 @@ from ..schemas.cliente_schemas import ClienteOut,ClienteResponse
 from ..schemas.vehiculos_schemas import vehiculos
 from ..database.database import get_db
 from fastapi import HTTPException
+from database.models import Cliente
 
 
 router = APIRouter(prefix="/api/clientes", tags=["clientes"])
@@ -58,3 +59,22 @@ def obtener_cliente_por_dni_endpoint(dni: str, db: Session = Depends(get_db)):
 def Obtener_todos_los_vehiculos(db: Session = Depends(get_db)):
     All_vehiculos = obtener_todos_los_vehiculos(db)
     return All_vehiculos
+
+@router.get("/cliente/{cliente_id}")
+def obtener_cliente_por_id_endpoint(cliente_id: int, db: Session = Depends(get_db)):
+    cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+    
+    if not cliente:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    
+    # Respuesta manual (sin incluir la contraseña por seguridad)
+    response = {
+        "id": cliente.id,
+        "nombre": cliente.nombre,
+        "email": cliente.email,
+        "DNI": cliente.DNI,
+        "telefono": cliente.telefono,
+        "vehiculo_id": cliente.vehiculo_id
+    }
+    
+    return response
