@@ -3,7 +3,7 @@ from ..database.database import get_db, Session
 from ..crud.auth_cliente_crud import create_cliente,autenticacion_cliente  ,autenticacion_encargado ,actualizar_perfil_por_dni
 from ..crud.vistas_Encargado_crud import create_empleado
 from ..schemas.auth_schema import ClienteRegister, ClienteLogin, ClienteUpdate
-from ..database.models import Cliente
+from ..database.models import Cliente, Vehiculo
 from ..schemas.auth_schema import EncargadoLogin, EmpleadoRegister
 from fastapi import Form
 from MecApp.backend.security.security import pwd_context
@@ -96,3 +96,34 @@ def actualizar_perfil_cliente(
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+# Obtener cliente por ID
+@router.get("/cliente/{cliente_id}", tags=["cliente"])
+def obtener_cliente_por_id_endpoint(cliente_id: int, db: Session = Depends(get_db)):
+    cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+    
+    if not cliente:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    
+    # NO INCLUIR LA CONTRASEÑA (seguridad)
+    response = {
+        "id": cliente.id,
+        "nombre": cliente.nombre,
+        "email": cliente.email,
+        "dni": cliente.DNI,  # Devolver normalizado como 'dni' en minúsculas
+        "DNI": cliente.DNI,  # También mantener DNI en mayúsculas para compatibilidad
+        "telefono": cliente.telefono,
+        "vehiculo_id": cliente.vehiculo_id,
+        "vehiculos": [
+            {
+                "id": v.id,
+                "patente": v.patente,
+                "modelo": v.modelo,
+                "marca": v.marca,
+                "anio": v.anio
+            }
+            for v in cliente.vehiculos
+        ] if hasattr(cliente, 'vehiculos') else []
+    }
+    
+    return response

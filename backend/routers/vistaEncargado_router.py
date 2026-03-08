@@ -16,7 +16,7 @@ def listar_clientes(db: Session = Depends(get_db)):
     clientes = obtener_todos_clientes(db)
     return clientes
 
-@router.get("/dni/{dni}")
+@router.get("/dni/{dni}/Este se usa")
 def obtener_cliente_por_dni_endpoint(dni: str, db: Session = Depends(get_db)):
     cliente = obtener_cliente_por_dni(db, dni)
     

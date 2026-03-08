@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
-from ..database.models import Cliente,Empleado
+from sqlalchemy.orm import Session, joinedload
+from ..database.models import Cliente,Empleado, Vehiculo
 from ..schemas.auth_schema import ClienteRegister,ClienteUpdate
 from MecApp.backend.security.security import pwd_context
 
