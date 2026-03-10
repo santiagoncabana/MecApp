@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Mi Historial - Cliente</title>
+    <link rel="stylesheet" href="../../css/cliente-css/dashboard-cliente.css">
+    <link rel="stylesheet" href="../../css/cliente-css/historial.css">
+</head>
+
+<body>
+    <!-- Shared header -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="nav-logo">⚙🔧</div>
+            <span class="app-name">MecApp</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="./dashboard-cliente.html" class="nav-link">Inicio</a>
+            <a href="./mis-vehiculos.html" class="nav-link">Mis Vehículos</a>
+            <a href="./mis-citas.html" class="nav-link">Mis Citas</a>
+            <a href="./historial.html" class="nav-link active">Mi Historial</a>
+            <a href="./perfil-cliente.html" class="nav-link">Mi Perfil</a>
+        </nav>
+        <div class="nav-user">
+            <span class="user-name" id="userName">Cliente</span>
+            <div class="user-avatar" id="userAvatar">C</div>
+            <button id="btnLogout" style="margin-left: 10px; cursor: pointer;">Salir</button>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="card">
+            <h2 class="h-title">Mi Historial de Citas</h2>
+            <p>Visualiza todas tus citas pasadas y su estado.</p>
+
+            <!-- Filtros -->
+            <div class="filtros-seccion">
+                <button class="filtro-btn active" data-filtro="todos">Todas</button>
+                <button class="filtro-btn" data-filtro="finalizado">Finalizadas</button>
+                <button class="filtro-btn" data-filtro="en_curso">En Curso</button>
+                <button class="filtro-btn" data-filtro="pendiente">Pendientes</button>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="row" style="margin-top:14px">
+                <div class="card col" style="min-width:200px">
+                    <h3>Total de Citas</h3>
+                    <div class="stat-number" id="totalCitas">0</div>
+                </div>
+                <div class="card col" style="min-width:200px">
+                    <h3>Citas Finalizadas</h3>
+                    <div class="stat-number" id="citasFinalizadas">0</div>
+                </div>
+                <div class="card col" style="min-width:200px">
+                    <h3>En Curso</h3>
+                    <div class="stat-number" id="citasEnCurso">0</div>
+                </div>
+            </div>
+
+            <!-- Contenedor de citas -->
+            <div class="citas-container" id="citasHistorialContainer">
+                <div class="empty-state">
+                    <p>Cargando tu historial de citas...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../js/dashboard-cliente.js"></script>
+    <script src="../../js/historial.js"></script>
+</body>
+
+</html>

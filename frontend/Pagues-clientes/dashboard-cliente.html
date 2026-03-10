@@ -23,34 +23,72 @@
             <a href="./perfil-cliente.html" class="nav-link">Mi Perfil</a>
         </nav>
         <div class="nav-user">
-            <span class="user-name">Cliente</span>
-            <div class="user-avatar">C</div>
+            <span class="user-name" id="userName">Cliente</span>
+            <div class="user-avatar" id="userAvatar">C</div>
+            <button id="btnLogout" style="margin-left: 10px; cursor: pointer;">Salir</button>
         </div>
     </header>
 
     <main class="page">
         <section class="card">
-            <h2 class="h-title">Bienvenido, Cliente</h2>
+            <h2 class="h-title" id="welcomeTitle">Bienvenido, Cliente</h2>
             <p>Resumen rápido de tu cuenta y accesos directos.</p>
 
             <div class="row" style="margin-top:14px">
                 <div class="card col" style="min-width:220px">
                     <h3>Próxima Cita</h3>
-                    <!-- placeholder: se cargará desde GET /api/turnos/turnos/buscar/{dni}/todos -->
-                    <div class="placeholder">No hay citas próximas</div>
+                    <div class="placeholder" id="proximaCita">Cargando...</div>
                 </div>
                 <div class="card col" style="min-width:220px">
                     <h3>Vehículo Principal</h3>
-                    <!-- placeholder: se cargará desde GET /api/clientes/dni/{dni} -->
-                    <div class="placeholder">Sin vehículo registrado</div>
+                    <div class="placeholder" id="vehiculoPrincipal">Cargando...</div>
                 </div>
             </div>
 
             <div style="margin-top:14px">
-                <a class="nav-link reservar-cita" href="./nueva-cita.html">Reservar nueva cita</a>
+                <button class="nav-link reservar-cita" id="btnReservarCita">Reservar nueva cita</button>
             </div>
         </section>
     </main>
+
+    <!-- Modal de Reserva de Cita -->
+    <div id="modalReservaEita" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reservar Nueva Cita</h2>
+                <button class="modal-close" id="btnCerrarModal">&times;</button>
+            </div>
+            <form id="formReservaCita" class="modal-form">
+                <div class="form-group">
+                    <label for="inputTelefono">Teléfono</label>
+                    <input type="tel" id="inputTelefono" placeholder="Ej: +34 612 345 678" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputDNI">DNI</label>
+                    <input type="text" id="inputDNI" placeholder="Ej: 12345678A" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputFecha">Fecha</label>
+                    <input type="date" id="inputFecha" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputHora">Hora</label>
+                    <input type="time" id="inputHora" required>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar" id="btnCancelarReserva">Cancelar</button>
+                    <button type="submit" class="btn-enviar">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/dashboard-cliente.js"></script>
+    <script src="../../js/reserva-cita.js"></script>
 </body>
 
 </html>

@@ -3,18 +3,27 @@ const API_BASE = 'http://localhost:8000';
 // Cache para clientes
 const clientesCache = new Map();
 
-// Obtener todos los vehículos
+// Obtener vehículos del cliente autenticado
 async function fetchVehiculos() {
     try {
-        console.log('Fetching vehicles from:', `${API_BASE}/api/clientes/vehiculos`);
-        const res = await fetch(`${API_BASE}/api/clientes/vehiculos`, { 
-             
-        });
-        console.log('Response status:', res.status);
+        // Obtener cliente_id del localStorage (se guarda en login)
+        const clienteId = localStorage.getItem('clienteId');
+        
+        if (!clienteId) {
+            console.error('No hay clienteId en localStorage');
+            return null;
+        }
+
+        console.log('Fetching vehicles for cliente:', clienteId);
+        const res = await fetch(`${API_BASE}/api/clientes/cliente/${clienteId}`);
+        
         if (!res.ok) throw new Error('Error al obtener vehículos');
-        const data = await res.json();
-        console.log('Vehicles data:', data);
-        return data;
+        
+        const cliente = await res.json();
+        console.log('Cliente data:', cliente);
+        
+        // Retornar array de vehiculos del cliente
+        return cliente.vehiculos || [];
     } catch (error) {
         console.error('Error fetching vehicles:', error);
         return null;
@@ -93,31 +102,40 @@ function createVehicleCard(vehiculo, clienteNombre) {
 
 // Renderizar estado de error
 function renderError() {
-    const container = document.getElementById('vehicles-container');
-    container.innerHTML = `
-        <div class="error-container">
-            <div class="error-icon">⚠️</div>
-            <h3>Error al cargar vehículos</h3>
-            <p>No se pudieron obtener los datos del servidor.</p>
-        </div>
-    `;
+    const container = document.getElementById('vehiculos-list');
+    if (container) {
+        container.innerHTML = `
+            <div class="error-container">
+                <div class="error-icon">⚠️</div>
+                <h3>Error al cargar vehículos</h3>
+                <p>No se pudieron obtener los datos del servidor.</p>
+            </div>
+        `;
+    }
 }
 
 // Renderizar estado vacío
 function renderEmpty() {
-    const container = document.getElementById('vehicles-container');
-    container.innerHTML = `
-        <div class="empty-container">
-            <div class="empty-icon">🚗</div>
-            <h3>No hay vehículos registrados</h3>
-            <p>Aún no se han registrado vehículos en el sistema.</p>
-        </div>
-    `;
+    const container = document.getElementById('vehiculos-list');
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-container">
+                <div class="empty-icon">🚗</div>
+                <h3>No hay vehículos registrados</h3>
+                <p>Aún no se han registrado vehículos en el sistema.</p>
+            </div>
+        `;
+    }
 }
 
 // Cargar y renderizar vehículos
 async function loadVehiculos() {
-    const container = document.getElementById('vehicles-container');
+    const container = document.getElementById('vehiculos-list');
+    
+    if (!container) {
+        console.error('Contenedor vehiculos-list no encontrado');
+        return;
+    }
     
     // Obtener vehículos
     const vehiculos = await fetchVehiculos();

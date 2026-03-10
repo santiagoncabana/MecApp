@@ -22,17 +22,15 @@
             <a href="./perfil-cliente.html" class="nav-link active">Mi Perfil</a>
         </nav>
         <div class="nav-user">
-            <span class="user-name">Cliente</span>
-            <div class="user-avatar">C</div>
+            <span class="user-name" id="userName">Cliente</span>
+            <div class="user-avatar" id="userAvatar">C</div>
+            <button id="btnLogout" style="margin-left: 10px; cursor: pointer;">Salir</button>
         </div>
     </header>
 
     <main class="page">
         <section class="card center-card">
             <h2 class="h-title">Mi Perfil</h2>
-
-            <!-- Endpoint: GET /api/clientes/dni/{dni}  -->
-            <!-- Save: PUT /clientes/{dni}/editar -->
 
             <form id="perfil-form">
                 <label class="label" for="nombre">Nombre</label>
@@ -42,7 +40,7 @@
                 <input id="email" name="email" type="email" class="campo-entrada" value="juan.perez@email.com">
 
                 <label class="label" for="dni">DNI</label>
-                <input id="dni" name="dni" type="text" class="campo-entrada" value="12345678">
+                <input id="dni" name="dni" type="text" class="campo-entrada" value="12345678" readonly>
 
                 <!-- Foto: control para cambiar o eliminar la imagen -->
                 <div style="margin-top:12px;">
@@ -55,13 +53,14 @@
                 </div>
 
                 <div style="margin-top:12px;display:flex;gap:10px;">
-                    <button type="button" class="boton-cancelar">Cancelar</button>
+                    <button type="button" class="boton-cancelar" onclick="window.history.back()">Cancelar</button>
                     <button type="submit" class="boton-guardar">Guardar Cambios</button>
                 </div>
             </form>
 
         </section>
     </main>
+    <script src="../../js/dashboard-cliente.js"></script>
 </body>
 
 </html>

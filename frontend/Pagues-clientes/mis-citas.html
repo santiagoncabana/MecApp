@@ -22,27 +22,22 @@
             <a href="./perfil-cliente.html" class="nav-link">Mi Perfil</a>
         </nav>
         <div class="nav-user">
-            <span class="user-name">Cliente</span>
-            <div class="user-avatar">C</div>
+            <span class="user-name" id="userName">Cliente</span>
+            <div class="user-avatar" id="userAvatar">C</div>
+            <button id="btnLogout" style="margin-left: 10px; cursor: pointer;">Salir</button>
         </div>
     </header>
 
     <main class="page">
         <section class="card">
             <h2 class="h-title">Mis Citas</h2>
-            <!-- Endpoint: GET /api/turnos/turnos/buscar/{dni}/todos -->
 
             <div id="turnos-list">
-                <!-- Placeholder por turno -->
-                <div class="card" style="margin-bottom:12px">
-                    <div><strong>Fecha:</strong> 2025-12-02</div>
-                    <div><strong>Hora:</strong> 10:00</div>
-                    <div><strong>Estado:</strong> Pendiente</div>
-
-                </div>
+                <div class="placeholder">Cargando citas…</div>
             </div>
         </section>
     </main>
+    <script src="../../js/dashboard-cliente.js"></script>
 </body>
 
 </html>

@@ -1,13 +1,10 @@
-
 // 1. Lógica para el Formulario de REGISTRO
 const registerForm = document.getElementById('registerForm');
 
 if (registerForm) {
-    // Solo si estamos en la página de registro
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Recoger datos (ej. fullName, email, password)
         const nombre = document.getElementById('fullName').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -29,7 +26,6 @@ async function enviarDatos(data) {
         });
 
         if (!response.ok) {
-            // Si la respuesta no es 2xx, muestra el error
             const errorData = await response.json();
             console.error('Error al registrar:', errorData);
             alert('Error: ' + errorData.detail); 
@@ -37,7 +33,6 @@ async function enviarDatos(data) {
         }
 
         console.log('Registro exitoso!');
-        // Redirigir o mostrar éxito
         window.location.href = '/MecApp/frontend/formulario.html';
 
     } catch (error) {
@@ -46,32 +41,18 @@ async function enviarDatos(data) {
     }
 }
 
-
-
 // 2. Lógica para el Formulario de LOGIN
+const loginForm = document.getElementById('loginForm');
 
-const backendURL = 'http://127.0.0.1:8000/login'; 
-
-const form = document.getElementById('loginForm');
-
-if (form) {
-    form.addEventListener('submit', async (e) => {
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const userType = document.getElementById('userType').value
         
-        let endpointURL;
-        let redirectURL;
-
-        if (userType == 'cliente') {
-            endpointURL = 'http://127.0.0.1:8000/login';
-            redirectURL = '/MecApp/frontend/Pagues-clientes/dashboard-cliente.html';
-        } else if (userType == 'encargado') {
-            endpointURL = 'http://127.0.0.1:8000/encargado/login';
-            redirectURL = '/MecApp/frontend/Pages_encargado/dashboard-encargado.html';
-        }
+        const endpointURL = 'http://127.0.0.1:8000/login';
+        const redirectURL = '/MecApp/frontend/Pagues-clientes/dashboard-cliente.html';
 
         const loginData = {
             email: email,
@@ -80,30 +61,57 @@ if (form) {
 
         await enviarLogin(loginData, endpointURL, redirectURL);
     });
-} else {
-    console.error("El formulario de login ('loginForm') no fue encontrado.");
 }
 
 async function enviarLogin(data, url, redirect) {
     try {
+        console.log('Enviando login...'); // DEBUG
+        
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-
         });
+
+        console.log('Respuesta recibida:', response.status); // DEBUG
 
         if (response.ok) {
             const result = await response.json();
-            console.log('Login exitoso:', result);
-            window.location.href = redirect; // <-- REDIRECCIÓN
+            console.log('Login exitoso:', result); // DEBUG
+            
+            // Guardar información del cliente en localStorage
+            if (result.cliente) {
+                console.log('Guardando datos en localStorage...'); // DEBUG
+                
+                localStorage.setItem('cliente', JSON.stringify(result.cliente));
+                localStorage.setItem('clienteId', result.cliente.id);
+                localStorage.setItem('clienteNombre', result.cliente.nombre);
+                localStorage.setItem('clienteEmail', result.cliente.email);
+                localStorage.setItem('clienteDni', result.cliente.dni);
+                
+                // Verificar que se guardó correctamente
+                const verificacion = localStorage.getItem('clienteId');
+                console.log('ClienteId guardado:', verificacion); // DEBUG
+                
+                // Esperar un momento antes de redirigir
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Redirigir al dashboard
+                window.location.href = redirect;
+            } else {
+                console.error('ERROR: No se recibió objeto cliente en la respuesta');
+                alert('Error: No se recibieron datos del cliente');
+            }
+            
         } else {
             const errorData = await response.json();
+            console.error('Error de login:', errorData); // DEBUG
             alert(`Error de Login: ${errorData.detail || 'Credenciales incorrectas.'}`);
         }
     } catch (error) {
-        alert('Error de conexión con el servidor.');
+        console.error('Error de conexión:', error);
+        alert('Error de conexión con el servidor: ' + error.message);
     }
 }

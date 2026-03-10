@@ -22,15 +22,15 @@
             <a href="./perfil-cliente.html" class="nav-link">Mi Perfil</a>
         </nav>
         <div class="nav-user">
-            <span class="user-name">Cliente</span>
-            <div class="user-avatar">C</div>
+            <span class="user-name" id="userName">Cliente</span>
+            <div class="user-avatar" id="userAvatar">C</div>
+            <button id="btnLogout" style="margin-left: 10px; cursor: pointer;">Salir</button>
         </div>
     </header>
 
     <main class="page">
         <section class="card">
             <h2 class="h-title">Mis Vehículos</h2>
-            <!-- Endpoint: GET /api/clientes/dni/{dni} (campo vehiculos)  -->
 
             <div id="vehiculos-list">
                 <div class="placeholder">Cargando vehículos…</div>
@@ -39,7 +39,7 @@
             <!-- Nota: esta pantalla es de solo lectura — no se permite agregar vehículos desde aquí -->
         </section>
     </main>
-    <script src="../../js/mis-vehiculos.js"></script>
+    <script src="../../js/dashboard-cliente.js"></script>
 </body>
 
 </html>

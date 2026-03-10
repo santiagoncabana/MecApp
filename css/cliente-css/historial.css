@@ -1,0 +1,182 @@
+/* Estilos para la página de Historial */
+
+/* Sección de Filtros */
+.filtros-seccion {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--border);
+    background: white;
+    color: var(--text);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.filtro-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filtro-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Estadísticas */
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 12px 0;
+}
+
+/* Contenedor de citas */
+.citas-container {
+    margin-top: 20px;
+    display: grid;
+    gap: 16px;
+}
+
+/* Tarjeta de cita */
+.cita-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: start;
+    transition: all 0.2s;
+}
+
+.cita-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+}
+
+.cita-card.finalizado {
+    border-left: 4px solid #10B981;
+}
+
+.cita-card.en_curso {
+    border-left: 4px solid #F59E0B;
+}
+
+.cita-card.pendiente {
+    border-left: 4px solid #EF4444;
+}
+
+/* Contenido de la cita */
+.cita-info {
+    display: grid;
+    gap: 8px;
+}
+
+.cita-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.cita-fecha {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.cita-hora {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.cita-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.cita-dato {
+    font-size: 13px;
+    color: var(--text);
+}
+
+.cita-dato strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.cita-label {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Badge de estado */
+.cita-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cita-status.finalizado {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.cita-status.en_curso {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.cita-status.pendiente {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cita-card {
+        grid-template-columns: 1fr;
+    }
+
+    .cita-datos {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros-seccion {
+        justify-content: center;
+    }
+
+    .row {
+        grid-template-columns: 1fr !important;
+    }
+}
