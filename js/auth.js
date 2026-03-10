@@ -41,7 +41,7 @@ async function enviarDatos(data) {
     }
 }
 
-// 2. Lógica para el Formulario de LOGIN
+// 2. Lógica para el Formulario de LOGIN - UNIFICADO (Cliente y Encargado)
 const loginForm = document.getElementById('loginForm');
 
 if (loginForm) {
@@ -51,23 +51,32 @@ if (loginForm) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
-        const endpointURL = 'http://127.0.0.1:8000/login';
-        const redirectURL = '/MecApp/frontend/Pagues-clientes/dashboard-cliente.html';
-
         const loginData = {
             email: email,
             contrasena: password 
         };
 
-        await enviarLogin(loginData, endpointURL, redirectURL);
+        await loginUnificado(loginData);
     });
 }
 
-async function enviarLogin(data, url, redirect) {
+/**
+ * Realiza login unificado detectando automáticamente el tipo de usuario (Cliente o Encargado)
+ * @param {Object} data - { email, contrasena }
+ */
+async function loginUnificado(data) {
     try {
-        console.log('Enviando login...'); // DEBUG
+        console.log('Intentando login... Email:', data.email);
         
-        const response = await fetch(url, {
+        // Desactivar botón del formulario
+        const btnLogin = document.querySelector('.login-btn');
+        const btnOriginalText = btnLogin.textContent;
+        btnLogin.disabled = true;
+        btnLogin.textContent = 'Cargando...';
+        
+        // 1. Intentar primero como CLIENTE
+        console.log('Intentando login como CLIENTE...');
+        let response = await fetch('http://127.0.0.1:8000/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,43 +84,91 @@ async function enviarLogin(data, url, redirect) {
             body: JSON.stringify(data)
         });
 
-        console.log('Respuesta recibida:', response.status); // DEBUG
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Login exitoso como CLIENTE', result);
+            
+            // Guardar como CLIENTE
+            guardarClienteEnStorage(result.cliente);
+            localStorage.setItem('userType', 'cliente');
+            localStorage.setItem('tipoUsuario', 'cliente');
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            window.location.href = '/MecApp/frontend/Pagues-clientes/dashboard-cliente.html';
+            return;
+        }
+
+        // 2. Si falla como cliente, intentar como ENCARGADO
+        console.log('Login como cliente falló. Intentando como ENCARGADO...');
+        response = await fetch('http://127.0.0.1:8000/encargado/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
 
         if (response.ok) {
             const result = await response.json();
-            console.log('Login exitoso:', result); // DEBUG
+            console.log('✅ Login exitoso como ENCARGADO', result);
             
-            // Guardar información del cliente en localStorage
-            if (result.cliente) {
-                console.log('Guardando datos en localStorage...'); // DEBUG
-                
-                localStorage.setItem('cliente', JSON.stringify(result.cliente));
-                localStorage.setItem('clienteId', result.cliente.id);
-                localStorage.setItem('clienteNombre', result.cliente.nombre);
-                localStorage.setItem('clienteEmail', result.cliente.email);
-                localStorage.setItem('clienteDni', result.cliente.dni);
-                
-                // Verificar que se guardó correctamente
-                const verificacion = localStorage.getItem('clienteId');
-                console.log('ClienteId guardado:', verificacion); // DEBUG
-                
-                // Esperar un momento antes de redirigir
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-                // Redirigir al dashboard
-                window.location.href = redirect;
-            } else {
-                console.error('ERROR: No se recibió objeto cliente en la respuesta');
-                alert('Error: No se recibieron datos del cliente');
-            }
+            // Guardar como ENCARGADO
+            guardarEncargadoEnStorage(result);
+            localStorage.setItem('userType', 'encargado');
+            localStorage.setItem('tipoUsuario', 'encargado');
             
-        } else {
-            const errorData = await response.json();
-            console.error('Error de login:', errorData); // DEBUG
-            alert(`Error de Login: ${errorData.detail || 'Credenciales incorrectas.'}`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            window.location.href = '/MecApp/frontend/Pages_encargado/dashboard-encargado.html';
+            return;
         }
+
+        // 3. Si ambos fallan, mostrar error
+        const errorData = await response.json();
+        console.error('❌ Error de login en ambos intentos:', errorData);
+        
+        btnLogin.disabled = false;
+        btnLogin.textContent = btnOriginalText;
+        
+        alert(`❌ Credenciales incorrectas.\nVerifica tu email y contraseña.`);
+        
     } catch (error) {
         console.error('Error de conexión:', error);
-        alert('Error de conexión con el servidor: ' + error.message);
+        
+        const btnLogin = document.querySelector('.login-btn');
+        btnLogin.disabled = false;
+        btnLogin.textContent = 'Iniciar Sesión';
+        
+        alert('⚠️ Error de conexión con el servidor: ' + error.message);
     }
+}
+
+/**
+ * Guarda los datos del cliente en localStorage
+ * @param {Object} cliente - Datos del cliente
+ */
+function guardarClienteEnStorage(cliente) {
+    console.log('Guardando datos de CLIENTE en localStorage...', cliente);
+    
+    localStorage.setItem('cliente', JSON.stringify(cliente));
+    localStorage.setItem('clienteId', cliente.id);
+    localStorage.setItem('clienteNombre', cliente.nombre);
+    localStorage.setItem('clienteEmail', cliente.email);
+    localStorage.setItem('clienteDni', cliente.dni);
+    
+    console.log('✅ Datos de cliente guardados');
+}
+
+/**
+ * Guarda los datos del encargado en localStorage
+ * @param {Object} encargado - Datos del encargado
+ */
+function guardarEncargadoEnStorage(encargado) {
+    console.log('Guardando datos de ENCARGADO en localStorage...', encargado);
+    
+    localStorage.setItem('encargado', JSON.stringify(encargado));
+    localStorage.setItem('encargadoEmail', encargado.email);
+    localStorage.setItem('encargadoNombre', encargado.nombre);
+    localStorage.setItem('encargadoRol', encargado.rol || 'encargado');
+    
+    console.log('✅ Datos de encargado guardados');
 }

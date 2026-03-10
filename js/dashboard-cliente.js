@@ -25,17 +25,30 @@ const API_BASE = 'http://127.0.0.1:8000';
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('=== PÁGINA CARGADA ===');
     
+    // Verificar tipo de usuario
+    const tipoUsuario = localStorage.getItem('userType');
     const clienteId = localStorage.getItem('clienteId');
+    
+    console.log('Tipo de usuario:', tipoUsuario);
     console.log('Cliente ID encontrado:', clienteId);
     
-    if (!clienteId) {
-        console.log('No hay sesión activa. Redirigiendo a login...');
-        alert('Debes iniciar sesión primero');
+    if (tipoUsuario !== 'cliente' && !clienteId) {
+        console.log('No hay sesión de cliente válida. Redirigiendo a login...');
+        alert('Debes iniciar sesión como cliente primero');
+        localStorage.clear();
         window.location.href = '/MecApp/frontend/login.html';
         return;
     }
     
-    console.log('Sesión válida. Inicializando página...');
+    if (!clienteId) {
+        console.log('No hay sessionId. Redirigiendo a login...');
+        alert('Debes iniciar sesión primero');
+        localStorage.clear();
+        window.location.href = '/MecApp/frontend/login.html';
+        return;
+    }
+    
+    console.log('Sesión válida de cliente. Inicializando página...');
     await inicializarPagina();
 });
 

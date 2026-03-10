@@ -1,13 +1,74 @@
 // URL de tu API de FastAPI. Asegúrate de que el puerto sea el correcto (ej. 8000)
 const API_BASE_URL = 'http://localhost:8000';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('=== DASHBOARD ENCARGADO CARGADO ===');
+    
+    // Verificar que el usuario sea ENCARGADO
+    const tipoUsuario = localStorage.getItem('userType');
+    const encargadoEmail = localStorage.getItem('encargadoEmail');
+    
+    console.log('Tipo de usuario:', tipoUsuario);
+    console.log('Email encargado:', encargadoEmail);
+    
+    if (tipoUsuario !== 'encargado' || !encargadoEmail) {
+        console.log('Acceso denegado. No es encargado. Redirigiendo al login...');
+        alert('Acceso denegado. Debe ser un encargado para acceder.');
+        localStorage.clear();
+        window.location.href = '/MecApp/frontend/login.html';
+        return;
+    }
+    
+    // Actualizar datos del encargado en el header
+    actualizarHeaderEncargado();
+    
+    // Configurar botón de logout
+    configurarLogoutEncargado();
+    
     // 1. Cargar las citas pendientes al inicio
     cargarCitasPendientes();
     
     // 2. Llama a la función de estadísticas aquí para que se ejecute al cargar
-    cargarEstadisticasDashboard();
+    await cargarEstadisticasDashboard();
 });
+
+/**
+ * Configura el botón de logout para encargados
+ */
+function configurarLogoutEncargado() {
+    const btnLogout = document.getElementById('btnLogout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            console.log('Cerrando sesión de encargado...');
+            localStorage.clear();
+            window.location.href = '/MecApp/frontend/login.html';
+        });
+    }
+}
+
+/**
+ * Actualiza el header con los datos del encargado
+ */
+function actualizarHeaderEncargado() {
+    try {
+        const encargadoNombre = localStorage.getItem('encargadoNombre') || 'Encargado';
+        
+        const userNameElement = document.querySelector('.user-name');
+        if (userNameElement) {
+            userNameElement.textContent = encargadoNombre;
+        }
+        
+        const userAvatarElement = document.querySelector('.user-avatar');
+        if (userAvatarElement) {
+            const primeraLetra = encargadoNombre.charAt(0).toUpperCase();
+            userAvatarElement.textContent = primeraLetra;
+        }
+        
+        console.log('Header encargado actualizado:', encargadoNombre);
+    } catch (error) {
+        console.error('Error al actualizar header:', error);
+    }
+}
 
 
 async function cargarEstadisticasDashboard() {
@@ -187,7 +248,7 @@ async function confirmarLlegada(turnoId) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include'
+            /*credentials: 'include'*/
         });
 
         if (!response.ok) {

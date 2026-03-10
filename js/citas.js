@@ -16,6 +16,16 @@ async function fetchTurnos() {
         if (!res.ok) throw new Error('Error al obtener turnos');
         const data = await res.json();
         console.log('Turnos data:', data);
+        
+        // DEBUG: Ver estados reales
+        if (data && data.length > 0) {
+            const estadosUnicos = [...new Set(data.map(t => t.estado))];
+            console.log('Estados únicos en BD:', estadosUnicos);
+            data.forEach(t => {
+                console.log(`Turno ${t.id}: estado='${t.estado}'`);
+            });
+        }
+        
         return data;
     } catch (error) {
         console.error('Error fetching turnos:', error);
@@ -77,10 +87,12 @@ async function createOrdenServicio(ordenData) {
 function getEstadoLabel(estado) {
     const labels = {
         'pendiente': 'PENDIENTE',
+        'en curso': 'EN CURSO',
         'en_curso': 'EN CURSO',
         'finalizado': 'FINALIZADO'
     };
-    return labels[estado] || estado.toUpperCase();
+    const lower = (estado || '').toLowerCase();
+    return labels[lower] || estado.toUpperCase();
 }
 
 function createAppointmentCard(turno) {
@@ -88,7 +100,9 @@ function createAppointmentCard(turno) {
     card.className = `appointment-card ${turno.estado}`;
     
     const clienteNombre = turno.cliente?.nombre || 'Cliente desconocido';
-    const vehiculoInfo = turno.vehiculo_id ? `Vehículo ID: ${turno.vehiculo_id}` : 'Sin vehículo';
+    const vehiculoInfo = turno.cliente?.vehiculos && turno.cliente.vehiculos.length > 0
+        ? `${turno.cliente.vehiculos[0].marca || ''} ${turno.cliente.vehiculos[0].modelo || ''} (${turno.cliente.vehiculos[0].patente || 'N/A'})`
+        : turno.vehiculo_id ? `Vehículo ID: ${turno.vehiculo_id}` : 'Sin vehículo';
     const empleadoNombre = turno.empleado?.nombre || 'Sin asignar';
     const ordenInfo = turno.orden_servicio 
         ? `✅ Orden #${turno.orden_servicio.id || turno.orden_servicio.orden_id || 'N/A'}` 
@@ -96,11 +110,17 @@ function createAppointmentCard(turno) {
 
     const telefono = turno.cliente?.telefono || turno.telefono || 'N/A';
     const dni = turno.cliente?.DNI || turno.DNI || 'N/A';
+    const turnoIdDisplay = turno.id || 'N/A';
+    const clienteIdDisplay = turno.cliente_id || 'N/A';
+    const vehiculoIdDisplay = turno.cliente?.vehiculos?.[0]?.id || turno.vehiculo_id || 'N/A';
 
     card.innerHTML = `
         <div class="appointment-time">${turno.hora || 'Sin hora'}</div>
         <div class="appointment-info">
             <p><strong>Cliente:</strong> ${clienteNombre}</p>
+            <p><strong>ID Turno:</strong> ${turnoIdDisplay}</p>
+            <p><strong>ID Cliente:</strong> ${clienteIdDisplay}</p>
+            <p><strong>ID Vehículo:</strong> ${vehiculoIdDisplay}</p>
             <p><strong>Vehículo:</strong> ${vehiculoInfo}</p>
             <p><strong>Empleado:</strong> ${empleadoNombre}</p>
             <p><strong>Fecha:</strong> ${turno.fecha || 'Sin fecha'}</p>
@@ -121,10 +141,10 @@ function createAppointmentCard(turno) {
                 ? `<button class="btn-icon ver-orden" data-id="${turno.orden_servicio.id}">
                        👁️ Ver Orden
                    </button>`
-                : `<button class="btn-icon orden" data-id="${turno.id}" 
-                           ${turno.estado !== 'finalizado' ? 'disabled' : ''}>
+                : `<a href="./orden-de-servicio.html?turno_id=${turno.id}&cliente_id=${turno.cliente_id}&turno_dni=${turno.DNI}&vehiculo_id=${vehiculoIdDisplay}" 
+                      class="btn-icon orden" style="text-decoration: none; display: inline-block;">
                        📋 Crear Orden
-                   </button>`
+                   </a>`
             }
         </div>
     `;
@@ -153,7 +173,10 @@ function renderTurnos(turnos) {
 }
 
 function updateStats(turnos) {
-    const confirmadas = turnos.filter(t => t.estado === 'en_curso' || t.estado === 'finalizado').length;
+    const confirmadas = turnos.filter(t => {
+        const est = (t.estado || '').toLowerCase();
+        return est === 'en_curso' || est === 'finalizado';
+    }).length;
     const canceladas = 0;
     
     document.getElementById('citas-confirmadas').textContent = confirmadas;
@@ -164,7 +187,17 @@ function filterTurnos(estado) {
     if (estado === 'todos') {
         renderTurnos(allTurnos);
     } else {
-        const filtered = allTurnos.filter(t => t.estado === estado);
+        console.log('Filtrando por estado:', estado);
+        const filtered = allTurnos.filter(t => {
+            const estTrim = (t.estado || '').trim().toLowerCase();
+            const filTrim = (estado || '').trim().toLowerCase();
+            const match = estTrim === filTrim;
+            if (!match && t.estado) {
+                console.log(`No coincide: '${t.estado}' != '${estado}'`);
+            }
+            return match;
+        });
+        console.log(`Filtro resultado: ${filtered.length} de ${allTurnos.length}`);
         renderTurnos(filtered);
     }
 }
@@ -250,12 +283,6 @@ document.addEventListener('click', (e) => {
     if (deleteBtn && !deleteBtn.disabled) {
         const turnoId = parseInt(deleteBtn.dataset.id);
         openDeleteModal(turnoId);
-    }
-    
-    if (ordenBtn && !ordenBtn.disabled) {
-        const turnoId = parseInt(ordenBtn.dataset.id);
-        const turno = allTurnos.find(t => t.id === turnoId);
-        if (turno) openOrdenModal(turno);
     }
     
     if (verOrdenBtn) {

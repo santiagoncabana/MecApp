@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MecApp - Orden de Servicio</title>
+    <link rel="stylesheet" href="/MecApp/css/encargado-css/style_citas.css">
+    <link rel="stylesheet" href="/MecApp/css/encargado-css/orden-de-servicio.css">
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="nav-logo">
+                <span class="nav-gear">⚙️</span>
+            </div>
+            <span class="app-name">MecApp</span>
+        </div>
+        <div class="nav-menu">
+            <a href="./dashboard-encargado.html" class="nav-link">Inicio</a>
+            <a href="./clientes.html" class="nav-link">Clientes</a>
+            <a href="./vehiculos.html" class="nav-link">Vehículos</a>
+            <a href="./citas.html" class="nav-link">Citas</a>
+        </div>
+        <div class="nav-user">
+            <span class="user-name">Encargado</span>
+            <div class="user-avatar">E</div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <div class="form-header">
+            <h1>📋 Crear Orden de Servicio</h1>
+            <p>Completa los detalles del servicio a realizar</p>
+        </div>
+
+        <!-- INFORMACIÓN DEL TURNO -->
+        <div class="info-section">
+            <h3>Información del Turno</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>ID Turno</label>
+                    <span id="info-turno-id">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Cliente</label>
+                    <span id="info-cliente-nombre">-</span>
+                </div>
+                <div class="info-item">
+                    <label>ID Cliente</label>
+                    <span id="info-cliente-id">-</span>
+                </div>
+                <div class="info-item">
+                    <label>DNI Cliente</label>
+                    <span id="info-cliente-dni">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Teléfono</label>
+                    <span id="info-cliente-telefono">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Vehículo Marca</label>
+                    <span id="info-vehiculo-marca">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Vehículo Modelo</label>
+                    <span id="info-vehiculo-modelo">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Patente</label>
+                    <span id="info-vehiculo-patente">-</span>
+                </div>
+                <div class="info-item">
+                    <label>ID Vehículo</label>
+                    <span id="info-vehiculo-id">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Fecha del Turno</label>
+                    <span id="info-turno-fecha">-</span>
+                </div>
+                <div class="info-item">
+                    <label>Hora del Turno</label>
+                    <span id="info-turno-hora">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULARIO ORDEN -->
+        <div class="form-section">
+            <h3>Detalles de la Orden</h3>
+            <form id="orden-form">
+                <input type="hidden" id="form-turno-id">
+                <input type="hidden" id="form-cliente-id">
+                <input type="hidden" id="form-vehiculo-id">
+
+                <div class="form-group">
+                    <label for="form-patente">Patente del Vehículo</label>
+                    <input type="text" id="form-patente" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-marca">Marca</label>
+                    <input type="text" id="form-marca" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-modelo">Modelo</label>
+                    <input type="text" id="form-modelo" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-anio">Año</label>
+                    <input type="number" id="form-anio" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-descripcion">Descripción del Trabajo *</label>
+                    <textarea id="form-descripcion" rows="6" required 
+                        placeholder="Describe detalladamente el trabajo realizado en el vehículo..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-precio">Precio Total ($) *</label>
+                    <input type="number" id="form-precio" step="0.01" min="0" required placeholder="0.00">
+                </div>
+
+                <div class="form-actions">
+                    <a href="./citas.html" class="btn-secondary">← Volver a Citas</a>
+                    <button type="submit" class="btn-primary">✓ Crear Orden de Servicio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/MecApp/js/orden-de-servicio.js"></script>
+</body>
+
+</html>

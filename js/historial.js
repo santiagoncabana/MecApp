@@ -8,6 +8,7 @@
  * - Búsqueda y presentación de datos
  */
 
+const API_BASE = 'http://127.0.0.1:8000';
 
 let todasLasCitas = [];
 let filtroActual = 'todos';
@@ -18,12 +19,16 @@ let filtroActual = 'todos';
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('=== PÁGINA HISTORIAL CARGADA ===');
     
+    const tipoUsuario = localStorage.getItem('userType');
     const clienteId = localStorage.getItem('clienteId');
     const clienteDni = localStorage.getItem('clienteDni');
     
-    if (!clienteId) {
-        console.log('No hay sesión activa. Redirigiendo a login...');
-        alert('Debes iniciar sesión primero');
+    console.log('Tipo de usuario:', tipoUsuario);
+    
+    if (tipoUsuario !== 'cliente' || !clienteId) {
+        console.log('No hay sesión de cliente válida. Redirigiendo a login...');
+        alert('Debes iniciar sesión como cliente primero');
+        localStorage.clear();
         window.location.href = '/MecApp/frontend/login.html';
         return;
     }
