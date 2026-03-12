@@ -5,7 +5,15 @@ from database.models import Cliente, Turno
 from typing import Optional
 
 
-
+class VehiculoBasico(BaseModel):
+    id: int
+    marca: str
+    modelo: str
+    patente: str
+    anio: int
+    
+    class Config:
+        from_attributes = True
 
 
 class ClienteBasico(BaseModel):
@@ -13,6 +21,7 @@ class ClienteBasico(BaseModel):
     nombre: str
     telefono: str | None = None
     DNI: int | None = None
+    vehiculos: list[VehiculoBasico] = []
     
     class Config:
         from_attributes = True
@@ -73,6 +82,8 @@ class TurnoResponse(BaseModel):
     fecha: str
     hora: str
     estado: str
+    DNI: str | None = None
+    vehiculo_id: int | None = None
     orden_servicio: Optional[OrdenResponse] = None
     cliente: Optional[ClienteBasico] = None       # Agregar
     empleado: Optional[EmpleadoBasico] = None

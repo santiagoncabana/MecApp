@@ -95,24 +95,52 @@ function getEstadoLabel(estado) {
     return labels[lower] || estado.toUpperCase();
 }
 
+// helper: obtener datos de vehículo por id (usa endpoint vehiculos)
+const vehiculosCache = new Map();
+async function fetchVehiculoById(id) {
+    if (vehiculosCache.has(id)) return vehiculosCache.get(id);
+    try {
+        const res = await fetch(`${API_BASE}/api/clientes/vehiculos`);
+        if (!res.ok) throw new Error('Error al obtener vehículos');
+        const lista = await res.json();
+        const veh = lista.find(v => String(v.id) === String(id));
+        if (veh) {
+            vehiculosCache.set(id, veh);
+        }
+        return veh;
+    } catch (e) {
+        console.error('fetchVehiculoById fallo', e);
+        return null;
+    }
+}
+
 function createAppointmentCard(turno) {
     const card = document.createElement('div');
     card.className = `appointment-card ${turno.estado}`;
     
     const clienteNombre = turno.cliente?.nombre || 'Cliente desconocido';
-    const vehiculoInfo = turno.cliente?.vehiculos && turno.cliente.vehiculos.length > 0
-        ? `${turno.cliente.vehiculos[0].marca || ''} ${turno.cliente.vehiculos[0].modelo || ''} (${turno.cliente.vehiculos[0].patente || 'N/A'})`
-        : turno.vehiculo_id ? `Vehículo ID: ${turno.vehiculo_id}` : 'Sin vehículo';
     const empleadoNombre = turno.empleado?.nombre || 'Sin asignar';
     const ordenInfo = turno.orden_servicio 
         ? `✅ Orden #${turno.orden_servicio.id || turno.orden_servicio.orden_id || 'N/A'}` 
         : '⚠️ Sin orden de servicio';
+    
+    // Vehículo
+    let vehiculoInfo = 'Sin vehículo';
+    let vehiculoMarcaModelo = '';
+    if (turno.cliente?.vehiculos && turno.cliente.vehiculos.length > 0) {
+        const v = turno.cliente.vehiculos[0];
+        vehiculoMarcaModelo = `${v.marca || ''} ${v.modelo || ''}`.trim();
+        vehiculoInfo = `${v.marca || ''} ${v.modelo || ''} (${v.patente || 'N/A'})`;
+    } else if (turno.vehiculo_id) {
+        vehiculoInfo = `Vehículo ID: ${turno.vehiculo_id}`;
+    }
 
     const telefono = turno.cliente?.telefono || turno.telefono || 'N/A';
     const dni = turno.cliente?.DNI || turno.DNI || 'N/A';
     const turnoIdDisplay = turno.id || 'N/A';
     const clienteIdDisplay = turno.cliente_id || 'N/A';
-    const vehiculoIdDisplay = turno.cliente?.vehiculos?.[0]?.id || turno.vehiculo_id || 'N/A';
+    // Prioridad: vehiculo de la orden > primer vehiculo del cliente > turno.vehiculo_id > N/A
+    const vehiculoIdDisplay = turno.orden_servicio?.vehiculo_id || turno.cliente?.vehiculos?.[0]?.id || turno.vehiculo_id || 'N/A';
 
     card.innerHTML = `
         <div class="appointment-time">${turno.hora || 'Sin hora'}</div>
@@ -121,8 +149,23 @@ function createAppointmentCard(turno) {
             <p><strong>ID Turno:</strong> ${turnoIdDisplay}</p>
             <p><strong>ID Cliente:</strong> ${clienteIdDisplay}</p>
             <p><strong>ID Vehículo:</strong> ${vehiculoIdDisplay}</p>
-            <p><strong>Vehículo:</strong> ${vehiculoInfo}</p>
-            <p><strong>Empleado:</strong> ${empleadoNombre}</p>
+            <p><strong>Empleado:</strong> ${empleadoNombre}</p>`;
+    
+    // si el texto inicial era solo ID, intentamos reemplazarlo con marca+modelo
+    if (vehiculoInfo.startsWith('Vehículo ID:')) {
+        const id = String(vehiculoIdDisplay);
+        fetchVehiculoById(id).then(v => {
+            if (v) {
+                const infoP = card.querySelector('.appointment-info p:nth-child(5)');
+                if (infoP) {
+                    infoP.innerHTML = `<strong>Vehículo:</strong> ${v.marca} ${v.modelo} (${v.patente || 'N/A'})`;
+                }
+            }
+        });
+    }
+
+    // terminado actualizar vehiculo
+    card.innerHTML += `
             <p><strong>Fecha:</strong> ${turno.fecha || 'Sin fecha'}</p>
             <p><strong>Teléfono:</strong> ${telefono}</p>
             <p><strong>DNI:</strong> ${dni}</p>

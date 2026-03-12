@@ -4,28 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Empleado - MecApp</title>
+    <title>Registro Cliente - MecApp</title>
     <link rel="stylesheet" href="/MecApp/css/cliente-css/Register-Cliente.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
     <div class="card-container">
-        <form class="register-form" action="/register-empleado" method="post">
+        <form class="register-form" id="registerClienteForm">
             <h2 class="app-title">MecApp</h2>
 
-            <input type="text" name="nombre" placeholder="Nombre completo" required>
-            <input type="email" name="email" placeholder="Correo electrónico" required>
-            <input type="password" name="contrasena" placeholder="Contraseña" required>
+            <div class="form-group">
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required>
+            </div>
 
-            <input type="hidden" name="rol" value="empleado">
+            <div class="form-group">
+                <input type="text" id="dni" name="dni" placeholder="DNI" required>
+            </div>
+
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required>
+            </div>
 
             <div class="terms-checkbox">
                 <input type="checkbox" id="terms" required>
                 <label for="terms">Acepto los <a href="#">términos y condiciones</a></label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Crear Cuenta</button>
+
+            <div id="message" style="display: none; padding: 10px; margin-top: 10px; border-radius: 4px; text-align: center;"></div>
 
             <div class="divider">
                 <hr>
@@ -33,17 +45,110 @@
                 <hr>
             </div>
 
-            <button type="button" class="btn btn-social btn-google">
-                <i class="fab fa-google"></i> Registrarse con Google
-            </button>
-
-            <button type="button" class="btn btn-social btn-facebook">
-                <i class="fab fa-facebook-f"></i> Registrarse con Facebook
-            </button>
-
-            <p class="login-link">¿Ya tienes una cuenta? <a href="#">Inicia Sesión</a></p>
+            <p class="login-link">¿Ya tienes una cuenta? <a href="/MecApp/frontend/login.html">Inicia Sesión</a></p>
         </form>
     </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        document.getElementById('registerClienteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombre').value.trim();
+            const dni = document.getElementById('dni').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const contrasena = document.getElementById('contrasena').value.trim();
+            const terms = document.getElementById('terms').checked;
+
+            const messageDiv = document.getElementById('message');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Validaciones
+            if (!nombre || !dni || !email || !contrasena) {
+                mostrarMensaje(messageDiv, 'Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            if (!terms) {
+                mostrarMensaje(messageDiv, 'Debes aceptar los términos y condiciones', 'error');
+                return;
+            }
+
+            // Deshabilitar botón
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registrando...';
+
+            try {
+                const formData = new FormData();
+                formData.append('nombre', nombre);
+                formData.append('DNI', dni);
+                formData.append('email', email);
+                formData.append('contrasena', contrasena);
+
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Error al registrar');
+                }
+
+                const result = await response.json();
+                console.log('✅ Cliente registrado:', result);
+
+                // Guardar datos en localStorage
+                const cliente = {
+                    id: result.id,
+                    nombre: nombre,
+                    email: email,
+                    dni: dni
+                };
+                
+                localStorage.setItem('cliente', JSON.stringify(cliente));
+                localStorage.setItem('clienteId', result.id);
+                localStorage.setItem('clienteNombre', nombre);
+                localStorage.setItem('clienteEmail', email);
+                localStorage.setItem('clienteDni', dni);
+                localStorage.setItem('userType', 'cliente');
+                localStorage.setItem('tipoUsuario', 'cliente');
+
+                mostrarMensaje(messageDiv, '✓ ¡Registro exitoso! Redirigiendo...', 'success');
+
+                // Redirigir al dashboard cliente después de 1.5 segundos
+                setTimeout(() => {
+                    window.location.href = '/MecApp/frontend/Pagues-clientes/dashboard-cliente.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                let mensaje = error.message;
+                
+                if (error.message.includes('DNI')) {
+                    mensaje = 'Este DNI ya está registrado';
+                }
+                
+                mostrarMensaje(messageDiv, `❌ ${mensaje}`, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Crear Cuenta';
+            }
+        });
+
+        function mostrarMensaje(element, texto, tipo) {
+            element.textContent = texto;
+            element.style.display = 'block';
+            
+            if (tipo === 'error') {
+                element.style.background = '#fecaca';
+                element.style.color = '#991b1b';
+            } else if (tipo === 'success') {
+                element.style.background = '#dcfce7';
+                element.style.color = '#166534';
+            }
+        }
+    </script>
 </body>
 
 </html>

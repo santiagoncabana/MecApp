@@ -436,6 +436,10 @@ function crearCardVehiculo(vehiculo, clienteNombre) {
     card.innerHTML = `
         <div class="vehicle-info">
             <div class="vehicle-info-row">
+                <strong>ID Vehículo:</strong>
+                <span style="color: #666; font-weight: bold;">#${vehiculo.id || 'N/A'}</span>
+            </div>
+            <div class="vehicle-info-row">
                 <strong>🚗 Marca:</strong>
                 <span>${vehiculo.marca || 'N/A'}</span>
             </div>

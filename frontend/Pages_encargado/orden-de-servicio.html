@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MecApp - Orden de Servicio</title>
-    <link rel="stylesheet" href="/MecApp/css/encargado-css/style_citas.css">
-    <link rel="stylesheet" href="/MecApp/css/encargado-css/orden-de-servicio.css">
+    <link rel="stylesheet" href="../../css/encargado-css/style_citas.css">
+    <link rel="stylesheet" href="../../css/encargado-css/orden-de-servicio.css">
 </head>
 
 <body>
@@ -25,8 +25,10 @@
             <a href="./citas.html" class="nav-link">Citas</a>
         </div>
         <div class="nav-user">
+            <button id="btnRegisterEmpleado" style="margin-right: 10px; cursor: pointer; padding: 6px 12px; background: #3B82F6; color: white; border: none; border-radius: 4px;">Registrar empleado</button>
             <span class="user-name">Encargado</span>
             <div class="user-avatar">E</div>
+            <button id="btnLogout" style="margin-left: 10px; cursor: pointer; padding: 6px 12px; background: #EF4444; color: white; border: none; border-radius: 4px;">Salir</button>
         </div>
     </nav>
 
@@ -98,22 +100,22 @@
 
                 <div class="form-group">
                     <label for="form-patente">Patente del Vehículo</label>
-                    <input type="text" id="form-patente" readonly>
+                    <input type="text" id="form-patente">
                 </div>
 
                 <div class="form-group">
                     <label for="form-marca">Marca</label>
-                    <input type="text" id="form-marca" readonly>
+                    <input type="text" id="form-marca">
                 </div>
 
                 <div class="form-group">
                     <label for="form-modelo">Modelo</label>
-                    <input type="text" id="form-modelo" readonly>
+                    <input type="text" id="form-modelo">
                 </div>
 
                 <div class="form-group">
                     <label for="form-anio">Año</label>
-                    <input type="number" id="form-anio" readonly>
+                    <input type="number" id="form-anio" placeholder="-">
                 </div>
 
                 <div class="form-group">
@@ -135,7 +137,79 @@
         </div>
     </div>
 
-    <script src="/MecApp/js/orden-de-servicio.js"></script>
+    <!-- Actualizar nombre de encargado en header -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const encargadoNombre = localStorage.getItem('encargadoNombre') || 'Encargado';
+            const userNameElement = document.querySelector('.user-name');
+            const userAvatar = document.querySelector('.user-avatar');
+            if (userNameElement) userNameElement.textContent = encargadoNombre;
+            if (userAvatar) userAvatar.textContent = encargadoNombre.charAt(0).toUpperCase();
+            
+            // Configurar botón de logout
+            const btnLogout = document.getElementById('btnLogout');
+            if (btnLogout) {
+                btnLogout.addEventListener('click', () => {
+                    console.log('Cerrando sesión de encargado...');
+                    localStorage.clear();
+                    window.location.href = '/MecApp/frontend/login.html';
+                });
+            }
+        });
+    </script>
+
+    <!-- MODAL REGISTRAR EMPLEADO -->
+    <div id="register-empleado-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-dialog">
+            <button class="modal-close" id="register-empleado-close">×</button>
+            <div class="modal-content">
+                <h3>Registrar Nuevo Empleado</h3>
+                <form id="register-empleado-form">
+                    <div class="form-group">
+                        <label for="empleado-nombre">Nombre *</label>
+                        <input type="text" id="empleado-nombre" required placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="empleado-email">Email *</label>
+                        <input type="email" id="empleado-email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="empleado-contrasena">Contraseña *</label>
+                        <input type="password" id="empleado-contrasena" required placeholder="Contraseña">
+                    </div>
+                    <div class="form-group">
+                        <label for="empleado-rol">Rol *</label>
+                        <select id="empleado-rol" required>
+                            <option value="">Seleccionar rol</option>
+                            <option value="encargado">Encargado</option>
+                            <option value="mecanico">Mecánico</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="empleado-disponible">
+                            <input type="checkbox" id="empleado-disponible" checked>
+                            Disponible
+                        </label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancel-empleado">Cancelar</button>
+                        <button type="submit" class="btn-primary">Registrar Empleado</button>
+                    </div>
+                </form>
+                <div id="empleado-message" style="margin-top: 15px; display: none; padding: 10px; border-radius: 4px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/registro-empleado-modal.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            configurarRegistroEmpleado();
+        });
+    </script>
+    <script src="../../js/orden-de-servicio.js"></script>
 </body>
 
 </html>

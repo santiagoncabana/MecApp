@@ -46,7 +46,7 @@ async function createOrdenServicio(ordenData) {
         return await res.json();
     } catch (error) {
         console.error('Error creating orden:', error);
-        alert('Error al crear la orden de servicio');
+        alert('Esta patente ya existe');
         return null;
     }
 }
@@ -74,7 +74,8 @@ function mostrarInfoTurno(turno) {
     let marca = '-';
     let modelo = '-';
     let patente = '-';
-    let anio = new Date().getFullYear();
+    // no default year, leave empty so the field isn't auto‑filled with 2026
+    let anio = '';
     let vehiculoId = '-';
     
     // Prioridad: cliente.vehiculos[0] > vehiculo directo > nada
@@ -83,13 +84,14 @@ function mostrarInfoTurno(turno) {
         marca = vehiculo.marca || '-';
         modelo = vehiculo.modelo || '-';
         patente = vehiculo.patente || '-';
-        anio = vehiculo.anio || new Date().getFullYear();
+        // only set year if provided
+        anio = vehiculo.anio ?? '';
         vehiculoId = vehiculo.id || '-';
     } else if (turno.vehiculo) {
         marca = turno.vehiculo.marca || '-';
         modelo = turno.vehiculo.modelo || '-';
         patente = turno.vehiculo.patente || '-';
-        anio = turno.vehiculo.anio || new Date().getFullYear();
+        anio = turno.vehiculo.anio ?? '';
         vehiculoId = turno.vehiculo.id || '-';
     }
     
@@ -111,7 +113,7 @@ function mostrarInfoTurno(turno) {
     document.getElementById('form-patente').value = patente;
     document.getElementById('form-marca').value = marca;
     document.getElementById('form-modelo').value = modelo;
-    document.getElementById('form-anio').value = anio;
+    document.getElementById('form-anio').value = '';  // Always empty like other fields show "-"
 }
 
 // -------------------- EVENT HANDLERS --------------------
@@ -142,10 +144,10 @@ document.getElementById('orden-form')?.addEventListener('submit', async (e) => {
         cliente_id: clienteId,
         empleado_id: currentTurno.empleado_id || null,
         vehiculo_id: vehiculoId,
-        patente: currentTurno.cliente?.vehiculos?.[0]?.patente || '',
-        marca: currentTurno.cliente?.vehiculos?.[0]?.marca || '',
-        modelo: currentTurno.cliente?.vehiculos?.[0]?.modelo || '',
-        anio: currentTurno.cliente?.vehiculos?.[0]?.anio || new Date().getFullYear(),
+        patente: document.getElementById('form-patente').value || currentTurno.cliente?.vehiculos?.[0]?.patente || '',
+        marca: document.getElementById('form-marca').value || currentTurno.cliente?.vehiculos?.[0]?.marca || '',
+        modelo: document.getElementById('form-modelo').value || currentTurno.cliente?.vehiculos?.[0]?.modelo || '',
+        anio: parseInt(document.getElementById('form-anio').value) || currentTurno.cliente?.vehiculos?.[0]?.anio || null,
         fecha_turno: currentTurno.fecha
     };
     

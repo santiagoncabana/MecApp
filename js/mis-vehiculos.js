@@ -3,10 +3,26 @@ const API_BASE = 'http://localhost:8000';
 // Cache para clientes
 const clientesCache = new Map();
 
-// Obtener vehículos del cliente autenticado
+// Obtener vehículos (detecta si es cliente o encargado)
 async function fetchVehiculos() {
     try {
-        // Obtener cliente_id del localStorage (se guarda en login)
+        const userType = localStorage.getItem('userType');
+        console.log('Tipo de usuario:', userType);
+        
+        // Si es ENCARGADO, obtener todos los vehículos
+        if (userType === 'encargado') {
+            console.log('Fetching all vehicles for encargado');
+            const res = await fetch(`${API_BASE}/api/clientes/vehiculos`);
+            
+            if (!res.ok) throw new Error('Error al obtener vehículos');
+            
+            const vehiculos = await res.json();
+            console.log('Todos los vehículos:', vehiculos);
+            
+            return vehiculos || [];
+        }
+        
+        // Si es CLIENTE, obtener solo sus vehículos
         const clienteId = localStorage.getItem('clienteId');
         
         if (!clienteId) {
@@ -102,7 +118,7 @@ function createVehicleCard(vehiculo, clienteNombre) {
 
 // Renderizar estado de error
 function renderError() {
-    const container = document.getElementById('vehiculos-list');
+    const container = document.getElementById('vehicles-container');
     if (container) {
         container.innerHTML = `
             <div class="error-container">
@@ -116,7 +132,7 @@ function renderError() {
 
 // Renderizar estado vacío
 function renderEmpty() {
-    const container = document.getElementById('vehiculos-list');
+    const container = document.getElementById('vehicles-container');
     if (container) {
         container.innerHTML = `
             <div class="empty-container">
@@ -130,10 +146,10 @@ function renderEmpty() {
 
 // Cargar y renderizar vehículos
 async function loadVehiculos() {
-    const container = document.getElementById('vehiculos-list');
+    const container = document.getElementById('vehicles-container');
     
     if (!container) {
-        console.error('Contenedor vehiculos-list no encontrado');
+        console.error('Contenedor vehicles-container no encontrado');
         return;
     }
     
