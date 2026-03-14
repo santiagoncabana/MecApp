@@ -1,11 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+import os
+from dotenv import load_dotenv
 from database import models
 import importlib
 
+load_dotenv()   
+
 SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Angel4660@localhost:5432/MecApp"
-# SQLALCHEMY_DATABASE_URL= "postgresql+psycopg2://postgres:postgres@localhost:5432/mecapp"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

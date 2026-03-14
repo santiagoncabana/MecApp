@@ -80,16 +80,3 @@ class OrdenDeServicio(Base):
     vehiculo_id = Column(Integer, ForeignKey("vehiculo.id"))
 
     turno = relationship("Turno", back_populates="orden_servicio", lazy="noload")
-    trabajos = relationship("Trabajo", back_populates="orden_servicio", lazy="select")
-
-
-class Trabajo(Base):
-    __tablename__ = "trabajo"
-
-    id = Column(Integer, primary_key=True, index=True) # Pk
-    descripcion_trabajo = Column(String(255))
-    repuesto_usado = Column(String(255))
-    precio_total = Column(Float)
-    orden_servicio_id = Column(Integer, ForeignKey("orden_de_servicio.id"))
-
-    orden_servicio = relationship("OrdenDeServicio", back_populates="trabajos")

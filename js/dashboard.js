@@ -97,10 +97,12 @@ function configurarRegistroEmpleado() {
             const nombre = document.getElementById('empleado-nombre').value.trim();
             const email = document.getElementById('empleado-email').value.trim();
             const contrasena = document.getElementById('empleado-contrasena').value.trim();
-            const rol = document.getElementById('empleado-rol').value;
             const disponible = document.getElementById('empleado-disponible').checked;
 
-            if (!nombre || !email || !contrasena || !rol) {
+            // Siempre registrar empleados como encargado (UI muestra "Mecánico")
+            const rol = 'encargado';
+
+            if (!nombre || !email || !contrasena) {
                 alert('Por favor completa todos los campos requeridos');
                 return;
             }
@@ -329,9 +331,6 @@ const turnoID = cita.id || 'N/A';
             <!-- Botón para Iniciar/Ver detalles -->
             <button class="action-btn start-btn" data-turno-id="${cita.id}">
                 <i class="fas fa-play"></i> Confirmar
-            </button>
-            <button class="action-btn editar-btn" data-turno-id="${cita.id}">
-                <i class="fas fa-play"></i> Editar
             </button>
         </div>
     `;
