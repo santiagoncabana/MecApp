@@ -5,7 +5,7 @@
 - [Marcos Medina](https://github.com/MarcosJMedina)
 - [Angel Rojas](https://github.15agustinrojas-jpg)
 
-### 🎨 Frontend (Html, CSS, Javascript, django, etc.)
+### 🎨 Frontend (Html, CSS, Javascript)
 - [Sahid Nahuel Esquivel Altamirano](https://github.com/Sahid-cyber)
 - [Rodrigo Raul](https://github.com/RodriAC123)
 ### 🗄️ Bases de datos (Sql, etc.)
